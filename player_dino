@@ -38,7 +38,7 @@ class Cactus(pg.sprite.Sprite):
         self.speed_x = -2
 
     def update(self, g, FPS, H):
-        if self.rect.x < H:
+        if self.rect.x > 0:
             self.rect.x += self.speed_x
         else:
             self.kill()
