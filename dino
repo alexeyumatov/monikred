@@ -25,7 +25,8 @@ g = 10
 v0 = -10
 # cactus = (x, y, w, h)
 cactus = [Cactus(7 * W // 8, H // 2 - 2 * r, r, 2 * r)]
-pl = Player(W // 8, H // 2 - r - 40)
+#pl = Player(W // 8, H // 2 - r - 40)
+
 # здесь происходит инициация,
 # создание объектов
 pygame.init()
@@ -36,7 +37,7 @@ cactus_surf = pygame.image.load('кактус.png')
 player_surf.set_colorkey((255, 255, 255))
 cactus_surf.set_colorkey((255,255,255))
 
-
+pl = Player(W // 8 - 50, H // 2 - 91, player_surf)
 
 # если надо до цикла отобразить
 # какие-то объекты, обновляем экран
@@ -84,6 +85,8 @@ while True:
         new_cactus = Cactus(7 * W // 8, H // 2 - 2 * r, r, 2 * r)
         cactus.append(new_cactus)
 
+    pl.update(g,FPS,H)
+
     if pl.phase > 0:
         pl.phase -= 1
         pl.speed_y += g / FPS
@@ -95,8 +98,9 @@ while True:
     sc.fill(WHITE)
     pygame.draw.line(sc, BLACK, (0, H // 2), (W, H // 2))
     #pygame.draw.circle(sc, YELLOW, (pl.x, pl.y), pl.size, 4)
-    player_rect = player_surf.get_rect(bottomleft=(pl.x - 50, pl.y + pl.size))
-    sc.blit(player_surf, player_rect)
+    #player_rect = player_surf.get_rect(bottomleft=(pl.x - 50, pl.y + pl.size))
+    #sc.blit(player_surf, player_rect)
+    sc.blit(pl.image, pl.rect)
 
 
     for cact in cactus:
