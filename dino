@@ -18,7 +18,7 @@ H = 400
 
 
 r = 30
-vx = -1
+vx = -2
 g = 10
 v0 = -10
 
@@ -29,11 +29,15 @@ sc = pygame.display.set_mode((W, H))
 clock = pygame.time.Clock()
 player_surf = pygame.image.load('player.png')
 cactus_surf = pygame.image.load('кактус.png')
+cactus_surf2 = pygame.image.load('cactus2.png')
 player_surf.set_colorkey((255, 255, 255))
 cactus_surf.set_colorkey((255,255,255))
+cactus_surf2.set_colorkey((255, 255, 255))
+
+cactus_surf_list = [cactus_surf, cactus_surf2]
 
 pl = Player(W // 8 - 50, H // 2 - 91, player_surf)
-cactus = Cactus(7 * W // 8, H // 2 - 2 * r, cactus_surf)
+cactus = Cactus(7 * W // 8, H // 2, cactus_surf_list)
 cactuses = pg.sprite.Group()
 cactuses.add(cactus)
 
@@ -53,7 +57,7 @@ while True:
             print(i)
             if i.key == 32:
                 if pl.phase == 0:
-                    pl.phase = 121
+                    pl.phase = 126
                     pl.speed_y = v0
         # вверх 1073741906
         # вниз 1073741905
@@ -75,18 +79,23 @@ while True:
 
 
     if counter % (3 * FPS) == 0:
-        new_cactus = Cactus(7 * W // 8, H // 2 - 2 * r, cactus_surf)
+        new_cactus = Cactus(7 * W // 8, H // 2, cactus_surf_list)
         cactuses.add(new_cactus)
 
     pl.update(g,FPS,H)
 
+
     if pl.phase > 0:
         pl.phase -= 1
         pl.speed_y += g / FPS
-        pl.y += 30 * pl.speed_y / FPS
+        if pl.speed_y < 0:
+            pl.y += 30 * (pl.speed_y + 1) / FPS
+        else:
+            pl.y += 30 * pl.speed_y / FPS
     if pl.phase == 0:
         pl.speed_y = 0
         pl.y = H // 2 - r
+    print(pl.y)
 
     sc.fill(WHITE)
     pygame.draw.line(sc, BLACK, (0, H // 2), (W, H // 2))
