@@ -36,6 +36,8 @@ cactus_surf2.set_colorkey((255, 255, 255))
 
 cactus_surf_list = [cactus_surf, cactus_surf2]
 
+death_sound = pygame.mixer.Sound('death.mp3')
+
 pl = Player(W // 8 - 50, H // 2 - 91, player_surf)
 cactus = Cactus(7 * W // 8, H // 2, cactus_surf_list)
 cactuses = pg.sprite.Group()
@@ -96,6 +98,13 @@ while True:
         pl.speed_y = 0
         pl.y = H // 2 - r
     print(pl.y)
+
+    if pygame.sprite.spritecollideany(pl, cactuses):
+        death_sound.play()
+        print('WASTED')
+        pygame.time.delay(2000)
+        pygame.quit()
+        sys.exit()
 
     sc.fill(WHITE)
     pygame.draw.line(sc, BLACK, (0, H // 2), (W, H // 2))
