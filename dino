@@ -4,6 +4,7 @@ import sys
 from player_dino import *
 
 counter = 0
+count = 0
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (125, 125, 125)
@@ -29,14 +30,24 @@ sc = pygame.display.set_mode((W, H))
 clock = pygame.time.Clock()
 player_surf = pygame.image.load('player.png')
 cactus_surf = pygame.image.load('кактус.png')
-cactus_surf2 = pygame.image.load('cactus2.png')
+cactus_surf2 = pygame.image.load('cactus.png')
+cactus_surf3 = pygame.image.load('cactus2.png')
 player_surf.set_colorkey((255, 255, 255))
 cactus_surf.set_colorkey((255,255,255))
 cactus_surf2.set_colorkey((255, 255, 255))
+cactus_surf3.set_colorkey((255,255,255))
 
-cactus_surf_list = [cactus_surf, cactus_surf2]
+cactus_surf_list = [cactus_surf, cactus_surf2, cactus_surf3]
 
 death_sound = pygame.mixer.Sound('death.mp3')
+death_sound.set_volume(0.2)
+jump_sound = pygame.mixer.Sound('прыжок.mp3')
+jump_sound.set_volume(0.2)
+background_sound = pygame.mixer.music.load('background.mp3')
+pygame.mixer.music.set_volume(0.05)
+pygame.mixer.music.play(-1,0,0)
+
+
 
 pl = Player(W // 8 - 50, H // 2 - 91, player_surf)
 cactus = Cactus(7 * W // 8, H // 2, cactus_surf_list)
@@ -58,6 +69,7 @@ while True:
         if i.type == pygame.KEYDOWN:
             print(i)
             if i.key == 32:
+                jump_sound.play()
                 if pl.phase == 0:
                     pl.phase = 126
                     pl.speed_y = v0
@@ -101,7 +113,7 @@ while True:
 
     if pygame.sprite.spritecollideany(pl, cactuses):
         death_sound.play()
-        print('WASTED')
+        print('DEATH')
         pygame.time.delay(2000)
         pygame.quit()
         sys.exit()
@@ -113,4 +125,13 @@ while True:
 
     cactuses.draw(sc)
 
+    pg.display.set_caption('Счет: ' + str(count))
+
     pygame.display.update()
+
+#увеличивать скорость кактусов
+#приседание
+#птицы
+#счет
+#фоновая музыка
+#переменный промежуток между появлением кактусов
