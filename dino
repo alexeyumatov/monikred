@@ -1,137 +1,20 @@
-# здесь подключаются модули
-import pygame
-import sys
-from player_dino import *
+import pygame as pg
 
-counter = 0
-count = 0
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-GRAY = (125, 125, 125)
-LIGHT_BLUE = (64, 128, 255)
-GREEN = (0, 200, 64)
-YELLOW = (225, 225, 0)
-PINK = (230, 50, 230)
-FPS = 60
-W = 600
-H = 400
+class Player(pg.sprite.Sprite):
 
+    def __init__(self, x, y, surf):
+        pg.sprite.Sprite.__init__(self)
+        self.image = surf
+        self.rect = self.image.get_rect(
+            bottomleft=(x, y))
+        self.size = 30
 
+class RED(pg.sprite.Sprite):
 
-r = 30
-vx = -2
-g = 10
-v0 = -10
-
-# здесь происходит инициация,
-# создание объектов
-pygame.init()
-sc = pygame.display.set_mode((W, H))
-clock = pygame.time.Clock()
-player_surf = pygame.image.load('player.png')
-cactus_surf = pygame.image.load('кактус.png')
-cactus_surf2 = pygame.image.load('cactus.png')
-cactus_surf3 = pygame.image.load('cactus2.png')
-player_surf.set_colorkey((255, 255, 255))
-cactus_surf.set_colorkey((255,255,255))
-cactus_surf2.set_colorkey((255, 255, 255))
-cactus_surf3.set_colorkey((255,255,255))
-
-cactus_surf_list = [cactus_surf, cactus_surf2, cactus_surf3]
-
-death_sound = pygame.mixer.Sound('death.mp3')
-death_sound.set_volume(0.2)
-jump_sound = pygame.mixer.Sound('прыжок.mp3')
-jump_sound.set_volume(0.2)
-background_sound = pygame.mixer.music.load('background.mp3')
-pygame.mixer.music.set_volume(0.05)
-pygame.mixer.music.play(-1,0,0)
-
-
-
-pl = Player(W // 8 - 50, H // 2 - 91, player_surf)
-cactus = Cactus(7 * W // 8, H // 2, cactus_surf_list)
-cactuses = pg.sprite.Group()
-cactuses.add(cactus)
-
-pygame.display.update()
-
-# главный цикл
-while True:
-    counter += 1
-    # задержка
-    clock.tick(FPS)
-
-    # цикл обработки событий
-    for i in pygame.event.get():
-        if i.type == pygame.QUIT:
-            sys.exit()
-        if i.type == pygame.KEYDOWN:
-            print(i)
-            if i.key == 32:
-                jump_sound.play()
-                if pl.phase == 0:
-                    pl.phase = 126
-                    pl.speed_y = v0
-        # вверх 1073741906
-        # вниз 1073741905
-        # влево 1073741904
-        # вправо 1073741903
-        # пробел - 32
-
-
-
-    # --------
-    # изменение объектов
-    # --------
-    cactuses.update(g, FPS, H)
-
-
-
-
-
-
-
-    if counter % (3 * FPS) == 0:
-        new_cactus = Cactus(7 * W // 8, H // 2, cactus_surf_list)
-        cactuses.add(new_cactus)
-
-    pl.update(g,FPS,H)
-
-
-    if pl.phase > 0:
-        pl.phase -= 1
-        pl.speed_y += g / FPS
-        if pl.speed_y < 0:
-            pl.y += 30 * (pl.speed_y + 1) / FPS
-        else:
-            pl.y += 30 * pl.speed_y / FPS
-    if pl.phase == 0:
-        pl.speed_y = 0
-        pl.y = H // 2 - r
-    print(pl.y)
-
-    if pygame.sprite.spritecollideany(pl, cactuses):
-        death_sound.play()
-        print('DEATH')
-        pygame.time.delay(2000)
-        pygame.quit()
-        sys.exit()
-
-    sc.fill(WHITE)
-    pygame.draw.line(sc, BLACK, (0, H // 2), (W, H // 2))
-    sc.blit(pl.image, pl.rect)
-
-
-    cactuses.draw(sc)
-
-    pg.display.set_caption('Счет: ' + str(count))
-
-    pygame.display.update()
-
-#увеличивать скорость кактусов
-#приседание
-#птицы
-#счет
-#фоновая музыка
-#переменный промежуток между появлением кактусов
+    def __init__(self, x, y, surf):
+        self.image = surf
+        self.rect = self.image.get_rect(
+            bottomleft=(x, y))
+        self.size_x = 20
+        self.size_y = 20
+        self.speed_x = -4
