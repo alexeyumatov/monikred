@@ -1,89 +1,51 @@
-from random import randint
-import pygame as pg
+import pygame
 import sys
+from player import *
 
-pg.init()
-pg.time.set_timer(pg.USEREVENT, 3000)
+pygame.init()
+pygame.mixer.init()
+pygame.time.set_timer(pg.USEREVENT, 2000)
+player_surf = pygame.image.load('car1.png')
 
-W = 400
-H = 400
+
+W = 800
+H = 600
+sc = pygame.display.set_mode((W, H))
+clock = pygame.time.Clock()
+
+counter = 0
 WHITE = (255, 255, 255)
-CARS = ('car1.png', 'car2.png', 'car3.png')
-# для хранения готовых машин-поверхностей
-CARS_SURF = []
+BLACK = (0, 0, 0)
+GRAY = (125, 125, 125)
+LIGHT_BLUE = (64, 128, 255)
+GREEN = (0, 200, 64)
+YELLOW = (225, 225, 0)
+PINK = (230, 50, 230)
+FPS = 60
 
-# надо установить видео режим
-# до вызова image.load()
-sc = pg.display.set_mode((W, H))
+obj = Player(W // 8 - 50, H // 2 - 91, player_surf)
 
-for i in range(len(CARS)):
-    CARS_SURF.append(
-        pg.image.load(CARS[i]).convert_alpha())
+while True:
+    # задержка
+    clock.tick(FPS)
 
-class Player(pg.sprite.Sprite):
-    def __init__(self, surf):
-        pg.sprite.Sprite.__init__(self)
-        self.image = surf
-        self.rect = self.image.get_rect(
-            center=(W // 2, 9 * H // 10))
-        self.speed = 0
-
-    def update(self):
-        if 0 < self.rect.x < W:
-            self.rect.x += self.speed
-
-class Car(pg.sprite.Sprite):
-    def __init__(self, x, surf, group):
-        pg.sprite.Sprite.__init__(self)
-        self.image = surf
-        self.rect = self.image.get_rect(
-            center=(x, 0))
-        # добавляем в группу
-        self.add(group)
-        # у машин будет разная скорость
-        self.speed = randint(1, 3)
-
-    def update(self):
-        if self.rect.y < H:
-            self.rect.y += self.speed
-        else:
-            # теперь не перебрасываем вверх,
-            # а удаляем из всех групп
-            self.kill()
-
-
-cars = pg.sprite.Group()
-
-# добавляем первую машину,
-# которая появляется сразу
-Car(randint(1, W),
-    CARS_SURF[randint(0, 2)], cars)
-pl = Player(CARS_SURF[0])
-
-while 1:
-    for i in pg.event.get():
-        if i.type == pg.QUIT:
+    # цикл обработки событий
+    for i in pygame.event.get():
+        if i.type == pygame.QUIT:
+            pygame.quit()
             sys.exit()
-        elif i.type == pg.USEREVENT:
-            Car(randint(1, W),
-                CARS_SURF[randint(0, 2)], cars)
-
-    keys = pg.key.get_pressed()
-    if keys[pg.K_RIGHT]:
-        pl.speed = +4
-    elif keys[pg.K_LEFT]:
-        pl.speed = -4
-    else:
-        pl.speed = 0
+        if i.type == pygame.USEREVENT:
+            pass
+    pos = pygame.mouse.get_pos()
+    print(pos[0], pos[1])
+    obj.rect.x = pos[0]
+    obj.rect.y = pos[1]
 
 
     sc.fill(WHITE)
 
-    cars.draw(sc)
-    sc.blit(pl.image, pl.rect)
+
+    sc.blit(obj.image, obj.rect)
 
     pg.display.update()
-    pg.time.delay(20)
 
-    cars.update()
-    pl.update()
